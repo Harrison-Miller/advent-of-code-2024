@@ -3,7 +3,7 @@ package day0
 import utils.*
 
 fun main() {
-    val day = "day0"
+    val day = packageName{}
     ::part1.runTests(day, listOf(
         "test" to 6,
         "input" to 45,

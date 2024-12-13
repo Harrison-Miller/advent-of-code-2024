@@ -4,6 +4,8 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 
+inline fun packageName(noinline block: () -> Unit): String = block.javaClass.packageName
+
 /**
  * Reads lines from the given input txt file.
  */

@@ -4,7 +4,7 @@ import utils.*
 import kotlin.math.abs
 
 fun main() {
-    val day = "day1"
+    val day = packageName{}
     ::part1.runTests(day, listOf(
         "test" to 11,
         "input" to 2815556,
