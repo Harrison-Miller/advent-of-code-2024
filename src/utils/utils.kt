@@ -30,7 +30,7 @@ fun String.splitToLong() = split(Regex("\\s+")).map { it.toLong() }
 fun List<String>.toInts() = map{ it.toInt() }
 fun List<String>.toLongs() = map{ it.toLong() }
 
-fun ((List<String>) -> Int).runTests(basePath: String, tc: List<Pair<String, Int?>>) {
+fun <T: Any>((List<String>) -> T).runTests(basePath: String, tc: List<Pair<String, T?>>) {
     tc.forEach { (path, expected) ->
         val input = readInput("$basePath/$path")
         val got = this.invoke(input)
