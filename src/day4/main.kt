@@ -15,27 +15,27 @@ fun main() {
     ))
 }
 
-fun part1Patterns(n: Int) = listOf(
+private fun part1Patterns(n: Int) = listOf(
     "(?=(XMAS|SAMX))",
     "(?=(X.{$n}M.{$n}A.{$n}S|S.{$n}A.{$n}M.{$n}X))",
     "(?=(X.{${n+1}}M.{${n+1}}A.{${n+1}}S|S.{${n+1}}A.{${n+1}}M.{${n+1}}X))",
     "(?=(X.{${n-1}}M.{${n-1}}A.{${n-1}}S|S.{${n-1}}A.{${n-1}}M.{${n-1}}X))"
 ).map { it.toRegex(RegexOption.DOT_MATCHES_ALL) }
 
-private fun part1(input: List<String>): Int {
-    val patterns = part1Patterns(input[0].length)
-    return patterns.countAll(input.joinToString("\n"))
+private fun part1(lines: List<String>): Int {
+    val patterns = part1Patterns(lines[0].length)
+    return patterns.countAll(lines.joinToString("\n"))
 }
 
-fun part2Patterns(n: Int) = listOf(
+private fun part2Patterns(n: Int) = listOf(
     "(?=(M|S)\\S(M|S).{${n-1}}(A).{${n-1}}((?<=M.{${(n-1)*2+1}})S|(?<=S.{${(n-1)*2+1}})M)\\S((?<=M.{${(n-1)*2+5}})S|(?<=S.{${(n-1)*2+5}})M))"
 ).map { it.toRegex(RegexOption.DOT_MATCHES_ALL) }
 
-private fun part2(input: List<String>): Int {
-    val patterns = part2Patterns(input[0].length)
-    return patterns.countAll(input.joinToString("\n"))
+private fun part2(lines: List<String>): Int {
+    val patterns = part2Patterns(lines[0].length)
+    return patterns.countAll(lines.joinToString("\n"))
 }
 
-fun List<Regex>.countAll(s: String) = this.sumOf {
+private fun List<Regex>.countAll(s: String) = this.sumOf {
     it.findAll(s).count()
 }

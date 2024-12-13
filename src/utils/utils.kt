@@ -23,9 +23,9 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  */
 fun Any?.println() = println(this)
 
-fun String.splitToInt() = split(Regex("\\s+")).map { it.toInt() }
+fun String.splitToInts(sep: Regex = Regex("\\s+")) = split(sep).map { it.toInt() }
 
-fun String.splitToLong() = split(Regex("\\s+")).map { it.toLong() }
+fun String.splitToLongs(sep: Regex = Regex("\\s+")) = split(sep).map { it.toLong() }
 
 fun List<String>.toInts() = map{ it.toInt() }
 fun List<String>.toLongs() = map{ it.toLong() }

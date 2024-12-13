@@ -16,9 +16,9 @@ fun main() {
     ))
 }
 
-private fun part1(input: List<String>): Int {
-    val (left, right) = input.map {
-        val (left, right) = it.splitToInt()
+private fun part1(lines: List<String>): Int {
+    val (left, right) = lines.map {
+        val (left, right) = it.splitToInts()
         left to right
     }.unzip()
 
@@ -27,9 +27,9 @@ private fun part1(input: List<String>): Int {
     }.sumOf { it }
 }
 
-private fun part2(input: List<String>): Int {
-    val (left, right) = input.map {
-        val (left, right) = it.splitToInt()
+private fun part2(lines: List<String>): Int {
+    val (left, right) = lines.map {
+        val (left, right) = it.splitToInts()
         left to right
     }.unzip()
 

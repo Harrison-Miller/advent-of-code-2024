@@ -15,12 +15,12 @@ fun main() {
     ))
 }
 
-private fun part1(input: List<String>): Long {
-    return mulAndSum(input.joinToString(""))
+private fun part1(lines: List<String>): Long {
+    return mulAndSum(lines.joinToString(""))
 }
 
-private fun part2(input: List<String>): Long {
-    return input.joinToString("").split("do()").sumOf {
+private fun part2(lines: List<String>): Long {
+    return lines.joinToString("").split("do()").sumOf {
         mulAndSum(it.split("don't()")[0])
     }
 }

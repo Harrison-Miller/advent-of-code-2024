@@ -15,15 +15,15 @@ fun main() {
     ))
 }
 
-private fun part1(input: List<String>): Int {
-    return input.count {
-        it.splitToInt().isSafe()
+private fun part1(lines: List<String>): Int {
+    return lines.count {
+        it.splitToInts().isSafe()
     }
 }
 
-private fun part2(input: List<String>): Int {
-    return input.count {
-        it.splitToInt().combinations().any { it.isSafe() }
+private fun part2(lines: List<String>): Int {
+    return lines.count {
+        it.splitToInts().combinations().any { it.isSafe() }
     }
 }
 
