@@ -13,6 +13,14 @@ val <T> Grid<T>.width: Int
 val <T> Grid<T>.height: Int
     get() = this.size
 
+fun <T> Grid<T>.filter(predicate: (T) -> Boolean): Set<Vec2> {
+    return mapIndexed { y, row ->
+        row.mapIndexedNotNull { x, cell ->
+            if (predicate(cell)) Pair(x, y).toVec2() else null
+        }
+    }.flatten().toSet()
+}
+
 fun <T> Grid<T>.get(x: Int, y: Int, zero: T): T {
     return if (x >= 0 || x < width || y >= 0 || y < height) {
         get(y)?.get(x) ?: zero
@@ -20,6 +28,29 @@ fun <T> Grid<T>.get(x: Int, y: Int, zero: T): T {
         zero
     }
 }
+
+fun <T> List<String>.mapGrid(transform: (Char) -> T): Grid<T> {
+    return mapIndexed { y, line ->
+        line.mapIndexed { x, c ->
+            transform(c)
+        }
+    }
+}
+
+fun <T> List<String>.mapSparseGrid(transform: (Char) -> T?): SparseGrid<T> {
+    return SparseGrid<T>(
+        width = first().length,
+        height = size,
+        cells = mapIndexed { y, line ->
+            line.mapIndexedNotNull { x, c ->
+                val t = transform(c)
+                val p = if (t != null) Pair(x, y).toVec2() to t else null
+                p
+            }
+        }.flatten().toMap()
+    )
+}
+
 
 data class SparseGrid<T>(
     val width: Int,
