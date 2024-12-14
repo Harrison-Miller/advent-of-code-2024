@@ -15,9 +15,7 @@ fun main() {
 //    ))
 
     ::part2.runTests(day, listOf(
-        "simple" to 50000000000000L,
-//        "test" to null,
-//        "input" to null,
+        "input" to 99423413811305,
     ))
 }
 
@@ -36,17 +34,15 @@ private fun part1(lines: List<String>): Long {
 }
 
 private fun part2(lines: List<String>): Long {
-//    val input = lines.toInput()
-//    return input.clawMachines.map {
-//        it.copy(prize = it.prize + Vec2(10000000000000L, 10000000000000L))
-//    }.sumOf {
-//        0L // TODO: create and solve a system of equations. Filter by whole numbers. map to cost. min of.
-//    }
-    return 0L
+    val input = lines.toInput()
+    return input.clawMachines.mapNotNull {
+        val newPrize = it.copy(prize = it.prize + Vec2(10000000000000L, 10000000000000L))
+        newPrize.solve()
+    }.sumOf { it.first * 3 + it.second * 1 }
 }
 
 
-internal fun ClawMachine.toGraph(): Graph<Vec2> {
+private fun ClawMachine.toGraph(): Graph<Vec2> {
     val points = elapsedTime("points", debug) {
         setOf(Vec2(0, 0)).floodFill {
             listOf(
@@ -68,8 +64,15 @@ internal fun ClawMachine.toGraph(): Graph<Vec2> {
     return Graph(points, edges)
 }
 
+private fun ClawMachine.solve(): Pair<Long, Long>? {
+    val d = (b.x * a.y - b.y * a.x)
+    val aPresses = if (d != 0L) (b.x * prize.y - b.y * prize.x) / d else 0
+    val bPresses = (prize.x - a.x * aPresses) / b.x
+    return if (a * aPresses + b * bPresses == prize) Vec2(aPresses, bPresses) else null
+}
 
-internal data class ClawMachine(
+
+private data class ClawMachine(
     val a: Vec2, // costs 3
     val b: Vec2, // costs 1
     val prize: Vec2
