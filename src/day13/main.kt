@@ -1,6 +1,7 @@
 package day13
 
 import utils.*
+import utils.vec2.*
 
 val debug = true
 
@@ -26,21 +27,22 @@ private fun part1(lines: List<String>): Long {
         val graph = it.toGraph()
         if (graph.nodes.contains(it.prize)) {
             elapsedTime("dijkstra for ${it.prize}", debug) {
-                dijkstra(graph.adjacencyMatrix, Vec2(0, 0)).getOrDefault(it.prize, 0)
+                dijkstra(graph.adjacencyMatrix, Vec2(0, 0)).getOrDefault(it.prize, 0L)
             }
         } else {
-            0
+            0L
         }
     }
 }
 
 private fun part2(lines: List<String>): Long {
-    val input = lines.toInput()
-    return input.clawMachines.map {
-        it.copy(prize = it.prize + Vec2(10000000000000L, 10000000000000L))
-    }.sumOf {
-        0L // TODO: create and solve a system of equations. Filter by whole numbers. map to cost. min of.
-    }
+//    val input = lines.toInput()
+//    return input.clawMachines.map {
+//        it.copy(prize = it.prize + Vec2(10000000000000L, 10000000000000L))
+//    }.sumOf {
+//        0L // TODO: create and solve a system of equations. Filter by whole numbers. map to cost. min of.
+//    }
+    return 0L
 }
 
 

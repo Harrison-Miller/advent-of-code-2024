@@ -21,7 +21,7 @@ inline fun <T: Any> Set<T>.adjacencyMatrix(weight: (a: T, b: T) -> Long?): Adjac
     }.groupByPair().mapValues { it.value.flatten() }
 }
 
-fun <T: Any> dijkstra(adj: AdjacencyMatrix<T>, start: T): Map<T, Long> {
+fun <T> dijkstra(adj: AdjacencyMatrix<T>, start: T): Map<T, Long> {
     val distances = mutableMapOf<T, Long>().withDefault { Long.MAX_VALUE }
     val priorityQueue = PriorityQueue<Pair<T, Long>>(compareBy { it.second }).apply { add(start to 0) }
 

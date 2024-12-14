@@ -26,3 +26,7 @@ fun <T> elapsedTime(name: String = "something", print: Boolean = true, block: ()
     return result
 }
 
+fun Boolean.doif(block: () -> Unit) = if(this) block() else Unit
+
+
+
