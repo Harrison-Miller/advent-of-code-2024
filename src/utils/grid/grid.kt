@@ -37,27 +37,6 @@ fun <T> List<String>.mapGrid(transform: (Char) -> T): Grid<T> {
     }
 }
 
-fun <T> List<String>.mapSparseGrid(transform: (Char) -> T?): SparseGrid<T> {
-    return SparseGrid<T>(
-        width = first().length,
-        height = size,
-        cells = mapIndexed { y, line ->
-            line.mapIndexedNotNull { x, c ->
-                val t = transform(c)
-                val p = if (t != null) Pair(x, y).toVec2() to t else null
-                p
-            }
-        }.flatten().toMap()
-    )
-}
-
-
-data class SparseGrid<T>(
-    val width: Int,
-    val height: Int,
-    val cells: Map<Vec2, T>
-)
-
 fun <T> Grid<T>.render(displayCell: (T, Vec2) -> Char) {
     mapIndexed { y, row ->
         row.mapIndexed { x, cell ->
@@ -68,19 +47,7 @@ fun <T> Grid<T>.render(displayCell: (T, Vec2) -> Char) {
     }
 }
 
-fun <T> SparseGrid<T>.render(displayCell: (T?, Vec2) -> Char?) = cells.render(width, height, displayCell)
 
-fun <T> Map<Vec2, T>.render(width: Int, height: Int, displayCell: (T?, Vec2) -> Char?) {
-    (0..<height).map { y ->
-        (0..<width).map { x ->
-            val pos = Pair(x, y).toVec2()
-            val cell = get(pos)
-            val c = displayCell(cell, pos) ?: '.'
-            print(c)
-        }
-        println()
-    }
-}
 
 fun Iterable<Vec2>.render(width: Int, height: Int, displayCell: (Boolean, Vec2) -> Char?) {
     (0..<height).map { y ->
