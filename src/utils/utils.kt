@@ -1,6 +1,7 @@
 package utils
 
 import java.io.File
+import kotlin.time.TimeSource
 
 inline fun packageName(noinline block: () -> Unit): String = block.javaClass.packageName
 
@@ -14,4 +15,14 @@ fun readLines(name: String): List<String> = File("src").walkBottomUp().first { i
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+
+private val timeSource = TimeSource.Monotonic
+fun <T> elapsedTime(name: String = "something", print: Boolean = true, block: () -> T): T {
+    val start = timeSource.markNow()
+    val result = block()
+    val end = timeSource.markNow()
+    if (print) println("time elapsed for $name: ${end-start}")
+    return result
+}
 
