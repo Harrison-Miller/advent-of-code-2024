@@ -1,5 +1,6 @@
 package utils
 
+import utils.vec2.*
 import java.util.*
 
 typealias AdjacencyMatrix<T> = Map<T, List<Pair<T, Long>>>
@@ -12,6 +13,20 @@ val <T> Graph<T>.nodes: Set<T>
 val <T> Graph<T>.adjacencyMatrix: AdjacencyMatrix<T>
     get() = this.second
 
+@JvmName("buildVec2AdjacencyMatrix")
+inline fun Set<Vec2>.adjacencyMatrix(weight: (a: Vec2, b: Vec2) -> Long?): AdjacencyMatrix<Vec2> {
+    return map { a ->
+       listOf(a.left(), a.right(), a.up(), a.down()).mapNotNull { b ->
+            if (contains(b)) {
+                weight(a, b)?.let { a to (b to it) }
+            } else {
+                null
+            }
+        }
+    }.flatten().groupByPair()
+}
+
+@JvmName("buildAdjacencyMatrix")
 inline fun <T: Any> Set<T>.adjacencyMatrix(weight: (a: T, b: T) -> Long?): AdjacencyMatrix<T> {
     return mapNotNull { a ->
         val e = mapNotNull { b ->
