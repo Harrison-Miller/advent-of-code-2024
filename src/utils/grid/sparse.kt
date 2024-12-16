@@ -12,6 +12,14 @@ data class SparseGrid<T>(
 
 fun <T> SparseGrid<T>.dimensions(): Vec2 = Pair(width, height).toVec2()
 
+fun <T> SparseGrid<T>.getOrDefault(key: Vec2, default: T): T {
+    return if (key.inBounds(width, height)) {
+        cells.getOrDefault(key, default)
+    } else {
+        default
+    }
+}
+
 @JvmName("mapLineToSparseGrid")
 fun <T> List<String>.mapSparseGrid(transform: (String) -> Pair<Vec2, T>?): SparseGrid<T> {
     val cells = mapNotNull { line ->

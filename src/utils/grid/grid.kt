@@ -2,8 +2,12 @@ package utils.grid
 
 import utils.vec2.*
 
+fun Vec2.inBounds(width: Int, height: Int): Boolean {
+    return x >= 0 && x < width && y >= 0 && y < height
+}
+
 fun Iterable<Vec2>.filterInBounds(width: Int, height: Int) =
-    filter { it.x >= 0 && it.x < width && it.y >= 0 && it.y < height }
+    filter { it.inBounds(width, height) }
 
 typealias Grid<T> = List<List<T>>
 
