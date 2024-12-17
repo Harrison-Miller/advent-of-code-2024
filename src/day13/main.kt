@@ -1,6 +1,10 @@
 package day13
 
 import utils.*
+import utils.graph.Graph
+import utils.graph.adjacencyMatrix
+import utils.graph.dijkstra
+import utils.graph.nodes
 import utils.vec2.*
 
 val debug = true

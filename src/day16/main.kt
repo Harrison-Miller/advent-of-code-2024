@@ -1,6 +1,7 @@
 package day16
 
 import utils.*
+import utils.graph.*
 import utils.grid.*
 import utils.vec2.*
 
@@ -26,39 +27,46 @@ Note: The act of turning 90 degrees not moving onto the tile at 90 degrees cost 
 So all of the above weights should be 1001 and 2001 where applicable.
  */
 
-/* part2 thoughts:
-a) we need to keep track of how many times we reached a node with the same value as before in dijkstras
-b) we need to reconstruct the path from dijkstra.
-c) at each intersection if number of times we got to the node in the same value as before is >1
-we can multiply that number by the number of steps since the previous intersection (where we could have split off).
- */
-
 fun main() {
     val day = packageName{}
-    ::part1.runTests(day, listOf(
-        "test" to 7036,
-        "input" to null,
-    ))
-
-//    ::part2.runTests(day, listOf(
-//        "test" to 0,
-//        "input" to null,
+//    ::part1.runTests(day, listOf(
+//        "test" to 7036,
+//        "input" to 135536,
 //    ))
+
+    ::part2.runTests(day, listOf(
+        "test" to 45,
+        "test2" to 64,
+        "input" to 583,
+    ))
 }
 
 private fun part1(lines: List<String>): Long {
     val input = readInput(lines)
-    input.render()
 
-    val graph = input.buildEdges()
-    //println(graph)
+    val (graph, _) = input.buildEdges()
 
-    val paths = dijkstra(graph, input.start)
-    return paths.getOrDefault(input.end, Long.MAX_VALUE)
+    val distances = dijkstra(graph, input.start)
+
+    return distances.getOrDefault(input.end, Long.MAX_VALUE)
 }
 
 private fun part2(lines: List<String>): Int {
-    return 0
+    val input = readInput(lines)
+
+    val (graph, fourWayIntersections) = input.buildEdges()
+
+    val paths = dijkstraWithAllPaths(graph, input.start)
+    var pathsToGoal = paths.getPaths(input.end) + input.end
+
+    // The weights skip over 4-way intersection when moving horizontal
+    // so we have to read them to the path
+    pathsToGoal += fourWayIntersections.mapNotNull {
+        if (pathsToGoal.contains(it.left()) && pathsToGoal.contains(it.right())) it else null
+    }.toSet()
+    input.render(pathsToGoal)
+
+    return pathsToGoal.size
 }
 
 private fun getIntersectionInfo(nodes: Set<Vec2>, a: Vec2): Triple<Boolean, Boolean, Boolean> {
@@ -85,20 +93,12 @@ private fun getIntersectionInfo(nodes: Set<Vec2>, a: Vec2): Triple<Boolean, Bool
     return Triple(corner, tIntersection, fourWay)
 }
 
-/*
-Tests completed:
-Starting directions: done
-Corners: done
-T-intersections: done
-4-ways: done
- */
-
-private fun Input.buildEdges(): AdjacencyMatrix<Vec2> {
-    val fourWayIntersection = mutableSetOf<Vec2>()
+private fun Input.buildEdges(): Pair<AdjacencyMatrix<Vec2>, Set<Vec2>> {
+    val fourWayIntersections = mutableSetOf<Vec2>()
     val graph = nodes.adjacencyMatrix { a, b ->
         val (corner, tIntersection, fourWay) = getIntersectionInfo(nodes, a)
         if (fourWay) {
-            fourWayIntersection.add(a)
+            fourWayIntersections.add(a)
         }
 
         val (_, bTIntersection, bFourWay) = getIntersectionInfo(nodes, b)
@@ -130,7 +130,7 @@ private fun Input.buildEdges(): AdjacencyMatrix<Vec2> {
 
     // handle the special connection for horizontal movement across a 4 way intersection
     val ng = graph.toMutableMap()
-    fourWayIntersection.forEach { intersection ->
+    fourWayIntersections.forEach { intersection ->
         val a = intersection.left()
         val b = intersection.right()
 
@@ -141,7 +141,7 @@ private fun Input.buildEdges(): AdjacencyMatrix<Vec2> {
         ng[b] = be + (a to 2)
     }
 
-    return ng
+    return ng to fourWayIntersections
 }
 
 private fun getTIntersectionWeight(intersection: Vec2, other: Vec2, nodes: Set<Vec2>): Long {
@@ -199,8 +199,9 @@ private fun readInput(lines: List<String>): Input {
     )
 }
 
-private fun Input.render() = nodes.render(width, height) { n, v ->
+private fun Input.render(pathToGoal: Set<Vec2>? = null) = nodes.render(width, height) { n, v ->
     when {
+        pathToGoal?.contains(v) ?: false -> 'O'
         v == start -> 'S'
         v == end -> 'E'
         n -> '.'
