@@ -1,6 +1,5 @@
 package utils.vec2
 
-import kotlin.math.abs
 import kotlin.math.sqrt
 
 fun Pair<Number, Number>.toVec2() = Vec2(first.toLong(), second.toLong())
