@@ -54,8 +54,8 @@ fun <T> Grid<T>.render(displayCell: (T, Vec2) -> Char) {
 
 
 fun Iterable<Vec2>.render(width: Int, height: Int, displayCell: (Boolean, Vec2) -> Char?) {
-    (0..<height).map { y ->
-        (0..<width).map { x ->
+    (0..<height).forEach { y ->
+        (0..<width).forEach { x ->
             val pos = Pair(x, y).toVec2()
             val c = displayCell(contains(pos), pos)?: '.'
             print(c)

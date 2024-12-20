@@ -1,5 +1,6 @@
 package utils.vec2
 
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 fun Pair<Number, Number>.toVec2() = Vec2(first.toLong(), second.toLong())
@@ -26,10 +27,23 @@ operator fun Vec2.times(b: Int): Vec2 = Vec2(x*b, y*b)
 @JvmName("Vec2TimesLong")
 operator fun Vec2.times(b: Long): Vec2 = Vec2(x*b, y*b)
 
+operator fun Vec2.div(b: Double): Vec2 = Vec2((x.toDouble()/b).toLong(), (y.toDouble()/b).toLong())
+
 // cross product
 operator fun Vec2.times(b: Vec2): Long = x*b.y - y*b.x
 
 fun Vec2.mag() = sqrt((x*x + y*y).toDouble())
+fun Vec2.normalize() = this / mag()
+
+fun Vec2.dirTo(b: Vec2): Vec2 {
+    val dir = b - this
+    return dir.normalize()
+}
+
+fun Vec2.cartesianDistTo(b: Vec2): Long {
+    val c = this - b
+    return abs(c.x) + abs(c.y)
+}
 
 fun Vec2.up(): Vec2 = Vec2(x, y-1)
 fun Vec2.down(): Vec2 = Vec2(x, y+1)
