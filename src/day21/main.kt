@@ -24,18 +24,16 @@ import kotlin.math.abs
 +---+---+---+
  */
 
-
-
 fun main() {
     val day = packageName{}
-//    ::part1.runTests(day, listOf(
-//        "test" to 126384,
-//        "input" to 176650,
-//    ))
-
-    ::part2.runTests(day, listOf(
-        "input" to null,
+    ::part1.runTests(day, listOf(
+        "test" to 126384,
+        "input" to 176650,
     ))
+
+//    ::part2.runTests(day, listOf(
+//        "input" to null,
+//    ))
 }
 
 
@@ -50,6 +48,7 @@ private fun part1(lines: List<String>): Long {
 
 // Guesses:
 // 456937420748588 to high
+// 246989897847922 to high
 private fun part2(lines: List<String>): Long {
     val dirPadMoves = generateDirPadSequenceMap()
     return lines.sumOf { code ->
@@ -65,6 +64,7 @@ private fun calcRobotMoves(dirPadMoves: Map<Vec2, List<Vec2>>, code: String, dep
         var end = numPadMap[c]!!
         // generate moves for first dir pad
         val moves = calcNextNumPadMoves(start, end)
+//        (end - start).formatted().println()
         start = end
         moves
     }.flatten().groupBy { it }.mapValues { it.value.count().toLong() }
@@ -82,13 +82,18 @@ private fun calcRobotMoves(dirPadMoves: Map<Vec2, List<Vec2>>, code: String, dep
     }.sum()
 }
 
+private fun numPadOrdering(d: Vec2, s: Vec2, e: Vec2): Boolean {
+    return (s.y == 3L && e.x == 0L) ||
+            d.y > 0 && !(s.x == 0L && e.y == 3L)
+}
+
 private fun calcNextNumPadMoves(numPadStart: Vec2, numPadEnd: Vec2): List<Vec2> {
     val delta = numPadEnd - numPadStart
 
     var dirPadStart = Vec2(2, 0)
+//    delta.formatted{numPadOrdering(delta, numPadStart, numPadEnd)}.println()
     val forwardMoves = delta.toSteps{
-        (numPadStart.y == 3L && numPadEnd.x == 0L) ||
-                delta.y > 0 && !(numPadStart.x == 0L && numPadEnd.y == 3L)
+        numPadOrdering(delta, numPadStart, numPadEnd)
     }.map { dir ->
         val c = dirToChar[dir]!!
         val end = dirPadMap[c]!!
@@ -141,9 +146,9 @@ private fun calcNextDirPadMoves(delta: Vec2): List<Vec2> {
     return forwardMoves + backwardsMove
 }
 
-private fun Vec2.formatted() = listOf(this).formatted()
-private fun List<Vec2>.formatted() = map { move ->
-    move.toSteps().map { dir ->
+private fun Vec2.formatted(yfirst: ()->Boolean = { x < -1}) = listOf(this).formatted{ yfirst() }
+private fun List<Vec2>.formatted(yfirst: (Vec2)->Boolean = { a -> a.x < -1}) = map { move ->
+    move.toSteps{ yfirst(move) }.map { dir ->
         dirToChar[dir]!!
     } + 'A'
 }.flatten().joinToString("")
@@ -171,7 +176,9 @@ val dirToChar = mapOf(
     Vec2(0, 1) to 'v',
 )
 
-private fun Vec2.toSteps(yfirst: ()->Boolean = { x < 0 }): List<Vec2> {
+private fun Vec2.toSteps(yfirst: ()->Boolean = {
+    x < -1
+}): List<Vec2> {
     val xsteps = (1..abs(x)).map {
         Vec2(1, 0) * sign(x)
     }
