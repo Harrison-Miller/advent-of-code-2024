@@ -28,15 +28,14 @@ import kotlin.math.abs
 
 fun main() {
     val day = packageName{}
-    ::part1.runTests(day, listOf(
-        "test" to 126384,
-        "input" to 176650,
-    ))
-
-//    ::part2.runTests(day, listOf(
-//        "test" to 0,
-//        "input" to null,
+//    ::part1.runTests(day, listOf(
+//        "test" to 126384,
+//        "input" to 176650,
 //    ))
+
+    ::part2.runTests(day, listOf(
+        "input" to null,
+    ))
 }
 
 
@@ -49,8 +48,15 @@ private fun part1(lines: List<String>): Long {
     }
 }
 
-private fun part2(lines: List<String>): Int {
-    return 0
+// Guesses:
+// 456937420748588 to high
+private fun part2(lines: List<String>): Long {
+    val dirPadMoves = generateDirPadSequenceMap()
+    return lines.sumOf { code ->
+        val x = code.trimStart('0').trimEnd('A').toLong()
+        val moves = calcRobotMoves(dirPadMoves, code, 25, numPadMap['A']!!)
+        x * moves
+    }
 }
 
 private fun calcRobotMoves(dirPadMoves: Map<Vec2, List<Vec2>>, code: String, depth: Int = 2, s: Vec2 = Vec2(2, 3)): Long {
