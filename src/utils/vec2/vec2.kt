@@ -40,10 +40,9 @@ fun Vec2.dirTo(b: Vec2): Vec2 {
     return dir.normalize()
 }
 
-fun Vec2.cartesianDistTo(b: Vec2): Long {
-    val c = this - b
-    return abs(c.x) + abs(c.y)
-}
+fun Vec2.cartesianDistTo(b: Vec2) = (this - b).cartesianLength()
+
+fun Vec2.cartesianLength() = abs(x) + abs(y)
 
 fun Vec2.up(): Vec2 = Vec2(x, y-1)
 fun Vec2.down(): Vec2 = Vec2(x, y+1)
