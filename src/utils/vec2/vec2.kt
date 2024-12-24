@@ -9,6 +9,18 @@ fun String.toVec2(): Vec2 {
     return Vec2(x.trim().toLong(), y.trim().toLong())
 }
 
+object Directions {
+    val ZERO = Vec2(0,0)
+    val ONE = Vec2(1,1)
+    val LEFT = Vec2(-1,0)
+    val WEST = Vec2(-1,0)
+    val RIGHT = Vec2(1,0)
+    val EAST = Vec2(1,0)
+    val UP = Vec2(0,-1)
+    val NORTH = Vec2(0,-1)
+    val DOWN = Vec2(0,1)
+    val SOUTH = Vec2(0,1)
+}
 
 typealias Vec2 = Pair<Long, Long>
 

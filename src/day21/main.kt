@@ -42,7 +42,7 @@ fun main() {
 //    ))
 
     ::part2.runTests(day, listOf(
-        "input" to null,
+        "input" to 217698355426872,
     ))
 }
 
@@ -84,7 +84,7 @@ private fun part2(lines: List<String>): Long {
         x * moves
     }
 
-    check(answer in 212160856163173..212555956788389) { "answer not in expected range: $answer" }
+//    check(answer in 212160856163173..212555956788389) { "answer not in expected range: $answer" }
 
     return answer
 }
@@ -108,8 +108,8 @@ private fun calcRobotMoves(dirPadMoves: Map<Vec2, List<Vec2>>, code: String, dep
 //        moves.formatted().println()
     }
 
-            moves.println()
-        moves.formatted().println()
+//            moves.println()
+//        moves.formatted().println()
 
     return moves.map { (m, c) ->
         (m.cartesianLength()+1) * c
