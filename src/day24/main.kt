@@ -40,16 +40,21 @@ fun main() {
 //    ))
 
     ::part2.runTests(day, listOf(
-        "input" to null,
+        "input" to 52866066286310,
     ))
 }
 
 private fun part1(lines: List<String>): Long {
     val input = readInput(lines)
-    return runAdder(input)
+    return run(input)
 }
 
-private fun part2(lines: List<String>): Int {
+// swap 1 qdg,z12
+// swap 2 vvf,z19
+// swap 3 fgn,dck (z23)
+// swap 4 nvh,z37
+// dck,fgn,nvh,qdg,vvf,z12,z19,z37
+private fun part2(lines: List<String>): Long {
     val input = readInput(lines)
     val x = input.wires.filterKeys { it.startsWith('x') }.toList().toLong()
     val y = input.wires.filterKeys { it.startsWith('y') }.toList().toLong()
@@ -57,8 +62,56 @@ private fun part2(lines: List<String>): Int {
 
     println("goal: $goal")
 
-    return 0
+
+    // this is the carry bit of the half adder
+    // which we manually checked
+    val carrybits = listOf("gct")
+    input.validateFullAdders(carrybits)
+
+    return run(input)
 }
+
+private fun Input.validateFullAdders(carrybits: List<String>, depth: Int = 1) {
+    if (depth == 45) {
+        return
+    }
+    val xbit = if (depth < 10) "x0$depth" else "x$depth"
+    val ybit = if (depth < 10) "y0$depth" else "y$depth"
+    val zbit =  if (depth < 10) "z0$depth" else "z$depth"
+    val pcbit = carrybits.get(depth-1)
+
+    val xxorygate = gates.find { it.lhs in listOf(xbit, ybit) && it.rhs in listOf(xbit, ybit) && it.op == "XOR" }!! // should alwats exust
+    val outgate = gates.find { it.out == zbit }!! // should always exist
+
+    if (outgate.op != "XOR") {
+        println("wrong type of gate set to output to $zbit: expected: XOR, got: $outgate")
+    }
+
+    val desiredOutgateIn = setOf(xxorygate.out, pcbit)
+
+    if (!(outgate.lhs in desiredOutgateIn && outgate.rhs in desiredOutgateIn)) {
+        val from = desiredOutgateIn - setOf(outgate.lhs, outgate.rhs)
+        val to = setOf(outgate.lhs, outgate.rhs) - desiredOutgateIn
+        println("out gate for $zbit not configured correctly: $outgate")
+        println("swap: $from and $to")
+    }
+
+    val lcarrygate = gates.find { it.lhs in desiredOutgateIn && it.rhs in desiredOutgateIn && it.op == "AND" }
+    val rcarrygate = gates.find { it.lhs in listOf(xbit, ybit) && it.rhs in listOf(xbit, ybit) && it.op == "AND" }!! // should always exist
+    val rcbit = rcarrygate.out
+    val carrygate = if (lcarrygate == null) {
+        println("left carry gate not found should be: $desiredOutgateIn AND")
+        gates.find { (it.lhs == rcbit || it.rhs == rcbit) && it.op == "OR" }
+    } else {
+        gates.find { (it.lhs in listOf(rcbit, lcarrygate.op) || it.rhs in listOf(rcbit, lcarrygate.out)) && it.op == "OR" }
+    }
+
+    println("found carry gate for depth: $depth, $carrygate")
+
+    val nextCarryBits = if(carrygate != null) carrybits + carrygate.out else carrybits
+    validateFullAdders(nextCarryBits, depth+1)
+}
+
 
 private data class Gate(
     val lhs: String,
@@ -108,7 +161,7 @@ private fun readInput(lines: List<String>): Input {
     )
 }
 
-private fun runAdder(input: Input): Long {
+private fun run(input: Input): Long {
     var wires = input.wires.toMutableMap()
 
     val startingGates = input.gates.filter {
