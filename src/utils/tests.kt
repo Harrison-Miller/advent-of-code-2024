@@ -16,7 +16,8 @@ fun <T: Any>((List<String>) -> T).runTests(basePath: String, tc: List<Pair<Strin
 fun <T: Any>((List<String>) -> T).runTests(config: TestConfig, tc: List<Pair<String, T?>>) {
     tc.forEach { (path, expected) ->
         val testName = if (this is KFunction<*>) "${this.name}.$path" else path
-        val input = readLines("${config.basePath}/$path")
+        val basePath = config.basePath.replace(".", "/")
+        val input = readLines("$basePath/$path")
         val startTime = timeSource.markNow()
         val got = this.invoke(input)
         val endTime = timeSource.markNow()
